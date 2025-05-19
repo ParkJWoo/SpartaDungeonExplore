@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,8 +22,10 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 mouseDelta;
 
-    [HideInInspector]
+    //  인벤토리를 켤 때 마우스 커서를 보이게 하기 위한 변수
     public bool canLook = true;
+
+    public Action inventory;
 
     private Rigidbody rigidbody;
 
@@ -76,6 +79,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnInventotyInput(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Started)
+        {
+            inventory?.Invoke();
+            ToggleCursor();
+        }
+    }
+
     private void Move()
     {
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
@@ -115,8 +127,9 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    public void ToggleCursor(bool toggle)
+    public void ToggleCursor()
     {
+        bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
     }
