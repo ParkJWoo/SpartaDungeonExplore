@@ -12,9 +12,16 @@ public class PlayerController : MonoBehaviour
     private Vector2 curMovementInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
+    public float jumpStaminaCost = 15f;
 
     private Coroutine speedUpCoroutine;
     private Coroutine jumpPowerUpCoroutine;
+
+    [Header("Dash")]
+    public float dashSpeedMultiplier = 10f;
+    public float dashStaminaCostPerSeconds = 10f;
+    private bool isDashing;
+    private bool isDashKeyPressed;
 
     [Header("Look")]
     public Transform cameraContainer;
@@ -32,8 +39,11 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rigidbody;
 
+    private PlayerCondition playerCondition;
+
     private void Awake()
     {
+        playerCondition = GetComponent<PlayerCondition>();
         rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -45,6 +55,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        HandleDash();
         Move();
     }
 
@@ -78,6 +89,7 @@ public class PlayerController : MonoBehaviour
     {
         if(context.phase == InputActionPhase.Started && IsGrounded())
         {
+            playerCondition.ConsumeStamina(jumpStaminaCost);
             rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
         }
     }
@@ -91,10 +103,30 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnDashInput(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Started)
+        {
+            isDashKeyPressed = true;
+        }
+
+        else if(context.phase == InputActionPhase.Canceled)
+        {
+            isDashKeyPressed = false;
+        }
+    }
+
     private void Move()
     {
+        float currentSpeed = moveSpeed;
+
+        if(isDashing)
+        {
+            currentSpeed *= dashSpeedMultiplier;
+        }
+
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
-        dir *= moveSpeed;
+        dir *= currentSpeed;
         dir.y = rigidbody.velocity.y;
 
         rigidbody.velocity = dir;
@@ -177,5 +209,21 @@ public class PlayerController : MonoBehaviour
 
         jumpPower -= amount;
         jumpPowerUpCoroutine = null;
+    }
+
+    private void HandleDash()
+    {
+        isDashing = false;
+
+        if(isDashKeyPressed && curMovementInput != Vector2.zero)
+        {
+            float cost = dashStaminaCostPerSeconds * Time.fixedDeltaTime;
+
+            if(playerCondition != null && playerCondition.CanUseStamina(cost))
+            {
+                isDashing = true;
+                playerCondition.ConsumeStamina(cost);
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ public class PlayerCondition : MonoBehaviour
     Condition stamina { get { return uiCondition.stamina; } }
     float moveSpeed { get { return CharacterManager.Instance.Player.playerController.moveSpeed; } }
 
+
     public event Action onTakeDamage;
 
     private void Update()
@@ -44,6 +45,17 @@ public class PlayerCondition : MonoBehaviour
     {
         CharacterManager.Instance.Player.playerController.ApplyJumpPowerUp(amount, duration);
     }
+
+    public void ConsumeStamina(float amount)
+    {
+        stamina.Subtract(amount);
+    }
+
+    public bool CanUseStamina(float amount)
+    {
+        return stamina.curValue >= amount;
+    }
+
 
     public void Die()
     {

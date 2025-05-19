@@ -3813,6 +3813,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 19e6e784-1d71-4bf1-921f-b7eb26ce9149
     m_ActionName: Player/Interaction[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1213239298}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnDashInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e8d2f3c9-d043-455f-9f40-8b14a3fc05ee
+    m_ActionName: Player/Dash[/Keyboard/leftShift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -3835,6 +3851,9 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 55
+  jumpStaminaCost: 15
+  dashSpeedMultiplier: 1.5
+  dashStaminaCostPerSeconds: 10
   cameraContainer: {fileID: 367511748}
   minXLook: -85
   maxXLook: 85
