@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: Item_Banana
   m_EditorClassIdentifier: 
   displayName: "\uBC14\uB098\uB098"
-  description: "\uC2A4\uD0DC\uBBF8\uB108\uB97C \uC77C\uC815 \uC218\uCE58 \uCC44\uC6CC\uC90D\uB2C8\uB2E4"
+  description: "10\uCD08\uAC04 \uC774\uB3D9 \uC18D\uB3C4\uB97C \uC99D\uAC00\uC2DC\uCF1C\uC90D\uB2C8\uB2E4."
   type: 2
   icon: {fileID: 21300000, guid: 3a7ee9505b0f06a4ba3ced46ef852ab7, type: 3}
   dropPrefab: {fileID: 1814017355584023965, guid: 27685ff6e5898a241b496c95736813dd, type: 3}
   canStack: 1
   maxStackAmount: 12
   consumables:
-  - type: 1
+  - type: 3
     value: 10
+    duration: 10

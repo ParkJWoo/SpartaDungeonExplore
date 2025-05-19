@@ -209,14 +209,21 @@ public class UIInventory : MonoBehaviour
     {
         if(selectedItem.itemData.type == ItemType.Consumable)
         {
-            for(int i = 0; i < selectedItem.itemData.consumables.Length; i++)
+            foreach(var consumable in selectedItem.itemData.consumables)
             {
-                switch(selectedItem.itemData.consumables[i].type)
+                switch(consumable.type)
                 {
                     case ConsumableType.Health:
-                        playerCondition.Heal(selectedItem.itemData.consumables[i].value);
+                        playerCondition.Heal(consumable.value);
                         break;
                     case ConsumableType.Stanima:
+                        playerCondition.StaminaHeal(consumable.value);
+                        break;
+                    case ConsumableType.SpeedUp:
+                        playerCondition.SpeedUp(consumable.value, consumable.duration);
+                        break;
+                    case ConsumableType.JumpPowerUp:
+                        playerCondition.JumpPowerUp(consumable.value, consumable.duration);
                         break;
                 }
             }

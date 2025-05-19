@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     public float jumpPower;
     public LayerMask groundLayerMask;
 
+    private Coroutine speedUpCoroutine;
+    private Coroutine jumpPowerUpCoroutine;
+
     [Header("Look")]
     public Transform cameraContainer;
     public float minXLook;
@@ -132,5 +135,47 @@ public class PlayerController : MonoBehaviour
         bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
+    }
+
+    //  이동 속도 증가 효과를 적용하는 메서드
+    public void ApplySpeedUp(float amount, float duration)
+    {
+        if(speedUpCoroutine != null)
+        {
+            StopCoroutine(speedUpCoroutine);
+        }
+
+        speedUpCoroutine = StartCoroutine(SpeedUpRoutine(amount, duration));
+    }
+
+    private IEnumerator SpeedUpRoutine(float amount, float duration)
+    {
+        moveSpeed += amount;
+
+        yield return new WaitForSeconds(duration);
+
+        moveSpeed -= amount;
+        speedUpCoroutine = null;
+    }
+
+    //  점프력 상승 효과를 적용하는 메서드
+    public void ApplyJumpPowerUp(float amount, float duration)
+    {
+        if(jumpPowerUpCoroutine != null)
+        {
+            StopCoroutine(jumpPowerUpCoroutine);
+        }
+
+        jumpPowerUpCoroutine = StartCoroutine(JumpPowerUpRoutine(amount, duration));
+    }
+
+    private IEnumerator JumpPowerUpRoutine(float amount, float duration)
+    {
+        jumpPower += amount;
+
+        yield return new WaitForSeconds(duration);
+
+        jumpPower -= amount;
+        jumpPowerUpCoroutine = null;
     }
 }

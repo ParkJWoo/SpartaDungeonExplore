@@ -9,6 +9,7 @@ public class PlayerCondition : MonoBehaviour
 
     Condition health { get { return uiCondition.health; } }
     Condition stamina { get { return uiCondition.stamina; } }
+    float moveSpeed { get { return CharacterManager.Instance.Player.playerController.moveSpeed; } }
 
     public event Action onTakeDamage;
 
@@ -27,6 +28,21 @@ public class PlayerCondition : MonoBehaviour
     public void Heal(float amount)
     {
         health.Add(amount);
+    }
+
+    public void StaminaHeal(float amount)
+    {
+        stamina.Add(amount);
+    }
+
+    public void SpeedUp(float amount, float duration)
+    {
+        CharacterManager.Instance.Player.playerController.ApplySpeedUp(amount, duration);
+    }
+
+    public void JumpPowerUp(float amount, float duration)
+    {
+        CharacterManager.Instance.Player.playerController.ApplyJumpPowerUp(amount, duration);
     }
 
     public void Die()

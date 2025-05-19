@@ -13,7 +13,9 @@ public enum ConsumableType
 {
     None, 
     Health,
-    Stanima
+    Stanima, 
+    SpeedUp,
+    JumpPowerUp
 }
 
 [System.Serializable]
@@ -21,6 +23,9 @@ public class ItemDataConsumable
 {
     public ConsumableType type;
     public float value;
+
+    //  일정 시간 동안의 효과를 지급하는 아이템을 위한 지속 시간 변수 추가.
+    public float duration;
 }
 
 [CreateAssetMenu(fileName = "Item", menuName = "New Item")]
