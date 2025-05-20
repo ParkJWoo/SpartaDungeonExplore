@@ -14,6 +14,18 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayerMask;
     public float jumpStaminaCost = 15f;
 
+    [Header("ClimbingWall")]
+    public float wallSlideSpeed;                                                    //  벽 타기 중 떨어지는 속도
+    public float wallClimbSpeed;                                                    //  벽을 타고 올라가는 속도
+    public LayerMask wallLayer;                                                     //  벽 레이어 
+    public Transform wallCheck;                                                     //  벽 충돌 판정 위치  
+    public float wallCheckRadius;                                                   //  벽 판정 범위
+    public Vector3 wallJumpDirectoin = new Vector3(1, 1, 0);                        //  벽에 붙어있을 떄 점프 방향
+    private bool isTouchingWall;                                                    //  벽에 닿았는지 판별
+    private bool isWallSliding;                                                     //  벽에 매달려 천천히 내려가는 상태인지 판별
+    private bool isWallClimbing;                                                    //  벽을 타고 올라가는 상태인지 판별
+
+
     private Coroutine speedUpCoroutine;
     private Coroutine jumpPowerUpCoroutine;
 
@@ -53,9 +65,16 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    private void Update()
+    {
+        WallCheck();
+        WallSlide();
+        WallClimb();
+    }
+
     private void FixedUpdate()
     {
-        HandleDash();
+        Dash();
         Move();
     }
 
@@ -89,8 +108,31 @@ public class PlayerController : MonoBehaviour
     {
         if(context.phase == InputActionPhase.Started && IsGrounded())
         {
-            playerCondition.ConsumeStamina(jumpStaminaCost);
-            rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
+            //  플레이어가 위치한 곳이 땅이라면, 스태미너를 사용하여 점프한다.
+            if(IsGrounded())
+            {
+                if(playerCondition.CanUseStamina(jumpStaminaCost))
+                {
+                    playerCondition.ConsumeStamina(jumpStaminaCost);
+                    rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
+                }
+            }
+
+            else if(isWallSliding || isWallClimbing)
+            {
+                if(playerCondition.CanUseStamina(jumpStaminaCost))
+                {
+                    playerCondition.ConsumeStamina(jumpStaminaCost);
+
+                    //  벽에서 점프할 때 캐릭터 방향과 반대 방향으로 튕긴다.
+                    Vector3 wallJumpDir = new Vector3(-transform.forward.x, 1, -transform.forward.z).normalized;
+                    rigidbody.velocity = Vector3.zero;
+                    rigidbody.AddForce(wallJumpDir * jumpPower, ForceMode.Impulse);
+
+                    isWallSliding = false;
+                    isWallClimbing = false;
+                }
+            }
         }
     }
 
@@ -201,6 +243,7 @@ public class PlayerController : MonoBehaviour
         jumpPowerUpCoroutine = StartCoroutine(JumpPowerUpRoutine(amount, duration));
     }
 
+    //  점프력 상승 효과 지속 시간 코루틴 함수
     private IEnumerator JumpPowerUpRoutine(float amount, float duration)
     {
         jumpPower += amount;
@@ -211,7 +254,8 @@ public class PlayerController : MonoBehaviour
         jumpPowerUpCoroutine = null;
     }
 
-    private void HandleDash()
+    //  대쉬 기능 메서드 
+    private void Dash()
     {
         isDashing = false;
 
@@ -224,6 +268,51 @@ public class PlayerController : MonoBehaviour
                 isDashing = true;
                 playerCondition.ConsumeStamina(cost);
             }
+        }
+    }
+
+    //  벽 근처 체크
+    private void WallCheck()
+    {
+        isTouchingWall = Physics.CheckSphere(wallCheck.position, wallCheckRadius, wallLayer);
+    }
+
+    //  벽에 붙어있을 때 느리게 미끄러지도록 하는 메서드
+    private void WallSlide()
+    {
+        if(isTouchingWall && !IsGrounded() && rigidbody.velocity.y < 0)
+        {
+            isWallSliding = true;
+            rigidbody.velocity = new Vector3(rigidbody.velocity.x, -wallSlideSpeed, rigidbody.velocity.z);
+        }
+
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+    //  벽 타기 처리 → W 키를 입력하여 벽을 올라간다.
+    private void WallClimb()
+    {
+        if(isTouchingWall && curMovementInput.y > 0)
+        {
+            isWallClimbing = true;
+            rigidbody.velocity = new Vector3(rigidbody.velocity.x, wallClimbSpeed, rigidbody.velocity.z);
+        }
+
+        else
+        {
+            isWallClimbing = false;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if(wallCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(wallCheck.position, wallCheckRadius);
         }
     }
 }
