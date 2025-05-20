@@ -8,7 +8,12 @@ public class PlayerCondition : MonoBehaviour
     public UICondition uiCondition;
 
     Condition health { get { return uiCondition.health; } }
-    Condition stamina { get { return uiCondition.stamina; } }
+    Condition stamina
+    {
+        get { return uiCondition.stamina; }
+        set { uiCondition.stamina = value; }
+    }
+
     float moveSpeed { get { return CharacterManager.Instance.Player.playerController.moveSpeed; } }
 
 

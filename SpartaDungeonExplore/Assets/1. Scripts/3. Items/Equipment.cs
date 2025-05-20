@@ -20,12 +20,31 @@ public class Equipment : MonoBehaviour
     {
         UnEquip();
         curEquip = Instantiate(itemData.equipPrefab, equipParent).GetComponent<Equip>();
+
+        //  장비 효과 적용
+        EquipTool equipTool = curEquip as EquipTool;
+
+        if(equipTool != null)
+        {
+            playerController.moveSpeed += equipTool.addMoveSpeed;
+            playerController.jumpPower += equipTool.addjumpPower;
+        }
     }
 
     public void UnEquip()
     {
-        if(curEquip != null)
+        //  적용된 장비 효과도 같이 해제!
+
+        if (curEquip != null)
         {
+            EquipTool equipTool = curEquip as EquipTool;
+
+            if(equipTool != null)
+            {
+                playerController.moveSpeed -= equipTool.addMoveSpeed;
+                playerController.jumpPower -= equipTool.addjumpPower;
+            }
+
             Destroy(curEquip.gameObject);
             curEquip = null;
         }
