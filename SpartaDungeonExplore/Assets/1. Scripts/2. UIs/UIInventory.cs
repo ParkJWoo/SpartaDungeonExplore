@@ -15,7 +15,7 @@ public class UIInventory : MonoBehaviour
     public Transform dropPosition;
 
     [Header("Selected Item")]
-    private ItemSlot selectedItem;
+    private ItemData selectedItem;
     private int selectedItemIndex;
     public TextMeshProUGUI selectedItemName;
     public TextMeshProUGUI selectedItemDesc;
@@ -184,32 +184,32 @@ public class UIInventory : MonoBehaviour
             return;
         }
 
-        selectedItem = slots[index];
+        selectedItem = slots[index].itemData;
         selectedItemIndex = index;
 
-        selectedItemName.text = selectedItem.itemData.displayName;
-        selectedItemDesc.text = selectedItem.itemData.description;
+        selectedItemName.text = selectedItem.displayName;
+        selectedItemDesc.text = selectedItem.description;
 
         selectedItemStatName.text = string.Empty;
         selectedItemStatValue.text = string.Empty;
 
-        for(int i = 0; i < selectedItem.itemData.consumables.Length; i++)
+        for(int i = 0; i < selectedItem.consumables.Length; i++)
         {
-            selectedItemStatName.text += selectedItem.itemData.consumables[i].type.ToString() + "\n";
-            selectedItemStatValue.text += selectedItem.itemData.consumables[i].value.ToString() + "\n";
+            selectedItemStatName.text += selectedItem.consumables[i].type.ToString() + "\n";
+            selectedItemStatValue.text += selectedItem.consumables[i].value.ToString() + "\n";
         }
 
-        useButton.SetActive(selectedItem.itemData.type == ItemType.Consumable);
-        equipButton.SetActive(selectedItem.itemData.type == ItemType.Equipable && !slots[index].isEquipped);
-        unEquipButton.SetActive(selectedItem.itemData.type == ItemType.Equipable && slots[index].isEquipped);
+        useButton.SetActive(selectedItem.type == ItemType.Consumable);
+        equipButton.SetActive(selectedItem.type == ItemType.Equipable && !slots[index].isEquipped);
+        unEquipButton.SetActive(selectedItem.type == ItemType.Equipable && slots[index].isEquipped);
         dropButton.SetActive(true);
     }
 
     public void OnUseButton()
     {
-        if(selectedItem.itemData.type == ItemType.Consumable)
+        if(selectedItem.type == ItemType.Consumable)
         {
-            foreach(var consumable in selectedItem.itemData.consumables)
+            foreach(var consumable in selectedItem.consumables)
             {
                 switch(consumable.type)
                 {
@@ -232,24 +232,41 @@ public class UIInventory : MonoBehaviour
         }
     }
 
+    public void OnEquipButton()
+    {
+        if (slots[curEquipIndex].isEquipped)
+        {
+            UnEquip(curEquipIndex);
+        }
+
+        slots[selectedItemIndex].isEquipped = true;
+        curEquipIndex = selectedItemIndex;
+        CharacterManager.Instance.Player.playerEquip.EquipNew(selectedItem); 
+        UpdateUI();
+
+        SelectItem(selectedItemIndex);
+    }
+
+    public void OnUnEqipButton()
+    {
+        UnEquip(selectedItemIndex);
+    }
+
     public void OnDropButton()
     {
-        ThrowItem(selectedItem.itemData);
+        ThrowItem(selectedItem);
         RemoveSelectedItem();
     }
 
     void RemoveSelectedItem()
     {
-        selectedItem.quantity--;
+        slots[selectedItemIndex].quantity--;
 
-        if(selectedItem.quantity <= 0)
+        if (slots[selectedItemIndex].quantity <= 0)
         {
-            if (slots[selectedItemIndex].isEquipped)
-            {
-                UnEquip(selectedItemIndex);
-            }
-
-            selectedItem.itemData = null;
+            selectedItem = null;
+            slots[selectedItemIndex].itemData = null;
+            selectedItemIndex = -1;
             ClearSelectedItemWindow();
         }
 
@@ -264,18 +281,12 @@ public class UIInventory : MonoBehaviour
     void UnEquip(int index)
     {
         slots[index].isEquipped = false;
-        //CharacterManager.Instance.Player.equip.UnEquip();
-
+        CharacterManager.Instance.Player.playerEquip.UnEquip();
         UpdateUI();
 
         if (selectedItemIndex == index)
         {
             SelectItem(selectedItemIndex);
         }
-    }
-
-    public void OnUnEqipButton()
-    {
-        UnEquip(selectedItemIndex);
     }
 }

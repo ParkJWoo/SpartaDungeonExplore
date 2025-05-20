@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     public PlayerController playerController;
     public PlayerCondition playerCondition;
+    public Equipment playerEquip;
 
     public ItemData itemData;
     public Action addItem;
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour
 
         playerController = GetComponent<PlayerController>();
         playerCondition = GetComponent<PlayerCondition>();
+        playerEquip = GetComponent<Equipment>();
 
         dropPosition = GetComponent<Transform>();
     }
