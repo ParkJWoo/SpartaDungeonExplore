@@ -14,15 +14,10 @@ public class PlayerCondition : MonoBehaviour
         set { uiCondition.stamina = value; }
     }
 
-    float moveSpeed { get { return CharacterManager.Instance.Player.playerController.moveSpeed; } }
-
-
     public event Action onTakeDamage;
 
     private void Update()
     {
-        health.Subtract(health.passiveValue * Time.deltaTime);
-
         stamina.Add(stamina.passiveValue * Time.deltaTime);
 
         if(health.curValue < 0f)
@@ -43,12 +38,16 @@ public class PlayerCondition : MonoBehaviour
 
     public void SpeedUp(float amount, float duration)
     {
-        CharacterManager.Instance.Player.playerController.ApplySpeedUp(amount, duration);
+        //CharacterManager.Instance.Player.playerController.ApplySpeedUp(amount, duration);
+
+        GameMediator.Instance.Notify(this, GameEvent.SpeedBuffKey, duration);
     }
 
     public void JumpPowerUp(float amount, float duration)
     {
-        CharacterManager.Instance.Player.playerController.ApplyJumpPowerUp(amount, duration);
+        //CharacterManager.Instance.Player.playerController.ApplyJumpPowerUp(amount, duration);
+
+        GameMediator.Instance.Notify(this, GameEvent.JumpBuffKey, duration);
     }
 
     public void ConsumeStamina(float amount)

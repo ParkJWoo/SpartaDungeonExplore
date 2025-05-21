@@ -7,13 +7,16 @@ using static UnityEngine.UIElements.Cursor;
 
 public class PlayerController : MonoBehaviour
 {
+    #region 플레이어 이동 및 점프 관련 변수들
     [Header("Movement")]
     public float moveSpeed;
     private Vector2 curMovementInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
     public float jumpStaminaCost = 15f;
+    #endregion
 
+    #region 벽 타기 기능 관련 변수들
     [Header("ClimbingWall")]
     public float wallSlideSpeed;                                                    //  벽 타기 중 떨어지는 속도
     public float wallClimbSpeed;                                                    //  벽을 타고 올라가는 속도
@@ -24,23 +27,29 @@ public class PlayerController : MonoBehaviour
     private bool isTouchingWall;                                                    //  벽에 닿았는지 판별
     private bool isWallSliding;                                                     //  벽에 매달려 천천히 내려가는 상태인지 판별
     private bool isWallClimbing;                                                    //  벽을 타고 올라가는 상태인지 판별
+    #endregion
 
-
+    //  효과 지속 시간 관련 변수들
     private Coroutine speedUpCoroutine;
     private Coroutine jumpPowerUpCoroutine;
 
+
+    #region 대쉬 기능 관련 변수들
     [Header("Dash")]
     public float dashSpeedMultiplier = 10f;
     public float dashStaminaCostPerSeconds = 10f;
     private bool isDashing;
     private bool isDashKeyPressed;
+    #endregion
 
+    #region 플레이어가 바라보는 방향 관련 변수들
     [Header("Look")]
     public Transform cameraContainer;
     public float minXLook;
     public float maxXLook;
     private float camCurXRot;
     public float lookSensitivity;
+    #endregion
 
     private Vector2 mouseDelta;
 
@@ -113,7 +122,10 @@ public class PlayerController : MonoBehaviour
             {
                 if(playerCondition.CanUseStamina(jumpStaminaCost))
                 {
-                    playerCondition.ConsumeStamina(jumpStaminaCost);
+                    //  중재자에게 점프 시 스태미너 소모 요청
+                    GameMediator.Instance.Notify(this, GameEvent.StaminaKey, jumpStaminaCost);
+
+                    //playerCondition.ConsumeStamina(jumpStaminaCost);
                     rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
                 }
             }
@@ -122,7 +134,10 @@ public class PlayerController : MonoBehaviour
             {
                 if(playerCondition.CanUseStamina(jumpStaminaCost))
                 {
-                    playerCondition.ConsumeStamina(jumpStaminaCost);
+                    //  중재자에게 점프 시 스태미너 소모 요청
+                    GameMediator.Instance.Notify(this, GameEvent.StaminaKey, jumpStaminaCost);
+
+                    //playerCondition.ConsumeStamina(jumpStaminaCost);
 
                     //  벽에서 점프할 때 캐릭터 방향과 반대 방향으로 튕긴다.
                     Vector3 wallJumpDir = new Vector3(-transform.forward.x, 1, -transform.forward.z).normalized;
@@ -266,7 +281,8 @@ public class PlayerController : MonoBehaviour
             if(playerCondition != null && playerCondition.CanUseStamina(cost))
             {
                 isDashing = true;
-                playerCondition.ConsumeStamina(cost);
+                GameMediator.Instance.Notify(this, GameEvent.StaminaKey, cost);
+                //playerCondition.ConsumeStamina(cost);
             }
         }
     }
@@ -306,13 +322,5 @@ public class PlayerController : MonoBehaviour
             isWallClimbing = false;
         }
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        if(wallCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(wallCheck.position, wallCheckRadius);
-        }
-    }
+  
 }
