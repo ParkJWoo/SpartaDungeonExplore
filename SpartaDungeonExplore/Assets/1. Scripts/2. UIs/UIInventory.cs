@@ -8,12 +8,15 @@ using UnityEngine.UIElements;
 
 public class UIInventory : MonoBehaviour
 {
+    #region 인벤토리 화면, 슬롯 관련 변수들
     public ItemSlot[] slots;
 
     public GameObject inventoryWindow;
     public Transform slotPanel;
     public Transform dropPosition;
+    #endregion
 
+    #region 인벤토리 창 UI 구성 요소 변수들
     [Header("Selected Item")]
     private ItemData selectedItem;
     private int selectedItemIndex;
@@ -25,6 +28,7 @@ public class UIInventory : MonoBehaviour
     public GameObject equipButton;
     public GameObject unEquipButton;
     public GameObject dropButton;
+    #endregion
 
     private int curEquipIndex;
 
@@ -97,10 +101,12 @@ public class UIInventory : MonoBehaviour
     }
     #endregion
 
+    #region 인벤토치 창이 열렸는지를 판별하는 메서드
     public bool IsOpen()
     {
         return inventoryWindow.activeInHierarchy;
     }
+    #endregion
 
     #region 인벤토리에 들어오는 아이템 처리 메서드
     public void AddItem()
@@ -136,6 +142,7 @@ public class UIInventory : MonoBehaviour
     }
     #endregion
 
+    #region 인벤토리 창 내 UI 변경 사항을 처리하는 메서드
     public void UpdateUI()
     {
         for(int i = 0; i < slots.Length; i++)
@@ -151,7 +158,9 @@ public class UIInventory : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region 아이템이 들어온 순서대로 정렬해주는 메서드
     ItemSlot GetItemStack(ItemData data)
     {
         for(int i = 0; i < slots.Length; i++)
@@ -164,7 +173,9 @@ public class UIInventory : MonoBehaviour
 
         return null;
     }
+    #endregion
 
+    #region 인벤토리 창 내 비어있는 슬롯 메서드
     ItemSlot GetEmptySlot()
     {
         for(int i = 0; i < slots.Length; i++)
@@ -177,6 +188,7 @@ public class UIInventory : MonoBehaviour
 
         return null;
     }
+    #endregion
 
     #region [버리기] 버튼을 누를 시 아이템을 버리는 메서드
     public void ThrowItem(ItemData data)
@@ -292,11 +304,6 @@ public class UIInventory : MonoBehaviour
         UpdateUI();
     }
     #endregion
-
-    public bool HasItem(ItemData item, int quantity)
-    {
-        return false;
-    }
 
     #region 아이템 장착 해제 메서드
     void UnEquip(int index)

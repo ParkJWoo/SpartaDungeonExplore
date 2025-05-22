@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    #region 플레이어 상호작용에 필요한 변수들 모음
     public float checkRate = 0.05f;
     private float lastCheckTime;
     public float maxCheckDistance;
@@ -16,12 +17,14 @@ public class PlayerInteraction : MonoBehaviour
 
     public TextMeshProUGUI promptText;
     private Camera camera;
+    #endregion
 
     private void Start()
     {
         camera = Camera.main;
     }
 
+    #region Update 메서드
     private void Update()
     {
         if(Time.time - lastCheckTime > checkRate)
@@ -51,6 +54,7 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
     }
+    #endregion
 
     private void SetPromptText()
     {
@@ -68,5 +72,4 @@ public class PlayerInteraction : MonoBehaviour
             promptText.gameObject.SetActive(false);
         }
     }
-
 }
