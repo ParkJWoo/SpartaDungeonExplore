@@ -14,7 +14,6 @@ public class ItemSlot : MonoBehaviour
     public TextMeshProUGUI quantityText;
     private Outline outline;
 
-
     public int index;
     public bool isEquipped;
     public int quantity;

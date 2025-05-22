@@ -16,6 +16,7 @@ public class Equipment : MonoBehaviour
         playerCondition = CharacterManager.Instance.Player.playerCondition;
     }
 
+    #region 장비 장착 메서드
     public void EquipNew(ItemData itemData)
     {
         UnEquip();
@@ -30,7 +31,9 @@ public class Equipment : MonoBehaviour
             playerController.jumpPower += equipTool.addjumpPower;
         }
     }
+    #endregion
 
+    #region 장비 장착 해제 메서드
     public void UnEquip()
     {
         //  적용된 장비 효과도 같이 해제!
@@ -49,4 +52,5 @@ public class Equipment : MonoBehaviour
             curEquip = null;
         }
     }
+    #endregion
 }

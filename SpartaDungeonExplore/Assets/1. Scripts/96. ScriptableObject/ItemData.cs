@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#region 아이템 타입
 public enum ItemType
 {
     None,
     Equipable,
     Consumable
 }
+#endregion
 
+#region 효과가 적용될 플레이어 수치
 public enum ConsumableType
 {
     None, 
@@ -17,6 +20,7 @@ public enum ConsumableType
     SpeedUp,
     JumpPowerUp
 }
+#endregion
 
 [System.Serializable]
 public class ItemDataConsumable

@@ -7,6 +7,7 @@ public interface IMediator
     void Notify(Component sender, string eventCode, object data = null);
 }
 
+#region GameEvent 클래스
 public static class GameEvent
 {
     public const string StaminaKey = "ConsumeStamina";
@@ -15,6 +16,7 @@ public static class GameEvent
     public const string EquipKey = "EquipItem";
     public const string UnEquipKey = "UnEquip";
 }
+#endregion
 
 public class GameMediator : MonoBehaviour, IMediator
 {
@@ -26,6 +28,7 @@ public class GameMediator : MonoBehaviour, IMediator
 
     public float duration;
 
+    #region Awake 메서드
     private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -41,7 +44,9 @@ public class GameMediator : MonoBehaviour, IMediator
         playerCondition = FindObjectOfType<PlayerCondition>();
         playerEquipment = FindObjectOfType<Equipment>();
     }
+    #endregion
 
+    #region Notify 메서드
     public void Notify(Component sender, string eventCode, object data = null)
     {
         switch(eventCode)
@@ -83,4 +88,5 @@ public class GameMediator : MonoBehaviour, IMediator
                 break;
         }
     }
+    #endregion
 }

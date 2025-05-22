@@ -31,25 +31,27 @@ public class PlayerCondition : MonoBehaviour
         health.Add(amount);
     }
 
+    #region 스태미너 회복 메서드
     public void StaminaHeal(float amount)
     {
         stamina.Add(amount);
     }
+    #endregion
 
+    #region 아이템 효과 적용을 위한 메서드 추가
     public void SpeedUp(float amount, float duration)
     {
-        //CharacterManager.Instance.Player.playerController.ApplySpeedUp(amount, duration);
-
         GameMediator.Instance.Notify(this, GameEvent.SpeedBuffKey, duration);
     }
 
     public void JumpPowerUp(float amount, float duration)
     {
-        //CharacterManager.Instance.Player.playerController.ApplyJumpPowerUp(amount, duration);
-
         GameMediator.Instance.Notify(this, GameEvent.JumpBuffKey, duration);
     }
 
+    #endregion
+
+    #region 스태미너 사용 관련 메서드 묶음
     public void ConsumeStamina(float amount)
     {
         stamina.Subtract(amount);
@@ -59,7 +61,7 @@ public class PlayerCondition : MonoBehaviour
     {
         return stamina.curValue >= amount;
     }
-
+    #endregion
 
     public void Die()
     {

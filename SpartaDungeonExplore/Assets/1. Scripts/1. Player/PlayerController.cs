@@ -29,10 +29,10 @@ public class PlayerController : MonoBehaviour
     private bool isWallClimbing;                                                    //  벽을 타고 올라가는 상태인지 판별
     #endregion
 
-    //  효과 지속 시간 관련 변수들
+    #region 효과 지속 시간 관련 변수들
     private Coroutine speedUpCoroutine;
     private Coroutine jumpPowerUpCoroutine;
-
+    #endregion
 
     #region 대쉬 기능 관련 변수들
     [Header("Dash")]
@@ -95,6 +95,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    #region 키 입력 메서드 묶음
     public void OnLookInput(InputAction.CallbackContext context)
     {
         mouseDelta = context.ReadValue<Vector2>();
@@ -113,6 +114,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    #region 플레이어 점프 키 
     public void OnJumpInput(InputAction.CallbackContext context)
     {
         if(context.phase == InputActionPhase.Started && IsGrounded())
@@ -125,7 +127,6 @@ public class PlayerController : MonoBehaviour
                     //  중재자에게 점프 시 스태미너 소모 요청
                     GameMediator.Instance.Notify(this, GameEvent.StaminaKey, jumpStaminaCost);
 
-                    //playerCondition.ConsumeStamina(jumpStaminaCost);
                     rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
                 }
             }
@@ -136,8 +137,6 @@ public class PlayerController : MonoBehaviour
                 {
                     //  중재자에게 점프 시 스태미너 소모 요청
                     GameMediator.Instance.Notify(this, GameEvent.StaminaKey, jumpStaminaCost);
-
-                    //playerCondition.ConsumeStamina(jumpStaminaCost);
 
                     //  벽에서 점프할 때 캐릭터 방향과 반대 방향으로 튕긴다.
                     Vector3 wallJumpDir = new Vector3(-transform.forward.x, 1, -transform.forward.z).normalized;
@@ -150,6 +149,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    #endregion
 
     public void OnInventotyInput(InputAction.CallbackContext context)
     {
@@ -172,7 +172,9 @@ public class PlayerController : MonoBehaviour
             isDashKeyPressed = false;
         }
     }
+    #endregion
 
+    #region 플레이어 이동 메서드
     private void Move()
     {
         float currentSpeed = moveSpeed;
@@ -188,7 +190,9 @@ public class PlayerController : MonoBehaviour
 
         rigidbody.velocity = dir;
     }
+    #endregion
 
+    #region 플레어어 시점 메서드
     void CameraLook()
     {
         camCurXRot += mouseDelta.y * lookSensitivity;
@@ -197,7 +201,9 @@ public class PlayerController : MonoBehaviour
 
         transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
     }
+    #endregion
 
+    #region 플레이어가 땅에 있는지를 확인하는 메서드
     bool IsGrounded()
     {
         Ray[] rays = new Ray[4]
@@ -218,15 +224,18 @@ public class PlayerController : MonoBehaviour
 
         return false;
     }
+    #endregion
 
+    #region 인게임 마우스 커서 보이게 할건지 메서드
     public void ToggleCursor()
     {
         bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
     }
+    #endregion
 
-    //  이동 속도 증가 효과를 적용하는 메서드
+    #region 이동 속도 증가 효과를 적용하는 메서드들 묶음
     public void ApplySpeedUp(float amount, float duration)
     {
         if(speedUpCoroutine != null)
@@ -246,7 +255,9 @@ public class PlayerController : MonoBehaviour
         moveSpeed -= amount;
         speedUpCoroutine = null;
     }
+    #endregion
 
+    #region 점프력 상승 효과를 적용하는 메서드들 묶음
     //  점프력 상승 효과를 적용하는 메서드
     public void ApplyJumpPowerUp(float amount, float duration)
     {
@@ -268,7 +279,9 @@ public class PlayerController : MonoBehaviour
         jumpPower -= amount;
         jumpPowerUpCoroutine = null;
     }
+    #endregion
 
+    #region 대쉬 기능 메서드
     //  대쉬 기능 메서드 
     private void Dash()
     {
@@ -282,11 +295,12 @@ public class PlayerController : MonoBehaviour
             {
                 isDashing = true;
                 GameMediator.Instance.Notify(this, GameEvent.StaminaKey, cost);
-                //playerCondition.ConsumeStamina(cost);
             }
         }
     }
+    #endregion
 
+    #region 벽 타기 기능 메서드 묶음
     //  벽 근처 체크
     private void WallCheck()
     {
@@ -322,5 +336,5 @@ public class PlayerController : MonoBehaviour
             isWallClimbing = false;
         }
     }
-  
+    #endregion
 }

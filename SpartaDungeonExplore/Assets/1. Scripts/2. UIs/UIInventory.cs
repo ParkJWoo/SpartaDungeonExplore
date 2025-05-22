@@ -31,7 +31,7 @@ public class UIInventory : MonoBehaviour
     private PlayerController playerController;
     private PlayerCondition playerCondition;
 
-
+    #region Start 메서드
     private void Start()
     {
         //  예외 처리
@@ -63,8 +63,9 @@ public class UIInventory : MonoBehaviour
 
         ClearSelectedItemWindow();
     }
+    #endregion
 
-    //  인벤토리 UI 초기화 메서드
+    #region 인벤토리 UI 초기화 메서드
     void ClearSelectedItemWindow()
     {
         selectedItem = null;
@@ -79,7 +80,9 @@ public class UIInventory : MonoBehaviour
         unEquipButton.SetActive(false);
         dropButton.SetActive(false);
     }
+    #endregion
 
+    #region Toggle 메서드
     public void Toggle()
     {
         if(IsOpen())
@@ -92,12 +95,14 @@ public class UIInventory : MonoBehaviour
             inventoryWindow.SetActive(true);
         }
     }
+    #endregion
 
     public bool IsOpen()
     {
         return inventoryWindow.activeInHierarchy;
     }
 
+    #region 인벤토리에 들어오는 아이템 처리 메서드
     public void AddItem()
     {
         ItemData data = CharacterManager.Instance.Player.itemData;
@@ -129,6 +134,7 @@ public class UIInventory : MonoBehaviour
         ThrowItem(data);
         CharacterManager.Instance.Player.itemData = null;
     }
+    #endregion
 
     public void UpdateUI()
     {
@@ -172,11 +178,14 @@ public class UIInventory : MonoBehaviour
         return null;
     }
 
+    #region [버리기] 버튼을 누를 시 아이템을 버리는 메서드
     public void ThrowItem(ItemData data)
     {
         Instantiate(data.dropPrefab, dropPosition.position, Quaternion.Euler(Vector3.one * Random.value * 360));
     }
+    #endregion
 
+    #region 인벤토리 창에서 아이템 선택 처리 메서드
     public void SelectItem(int index)
     {
         if (slots[index].itemData == null)
@@ -204,7 +213,9 @@ public class UIInventory : MonoBehaviour
         unEquipButton.SetActive(selectedItem.type == ItemType.Equipable && slots[index].isEquipped);
         dropButton.SetActive(true);
     }
+    #endregion
 
+    #region [사용] 버튼 이벤트 처리 메서드
     public void OnUseButton()
     {
         if(selectedItem.type == ItemType.Consumable)
@@ -231,7 +242,9 @@ public class UIInventory : MonoBehaviour
             RemoveSelectedItem();
         }
     }
+    #endregion
 
+    #region [장착] 버튼 이벤트 처리 메서드
     public void OnEquipButton()
     {
         if (slots[curEquipIndex].isEquipped)
@@ -246,18 +259,24 @@ public class UIInventory : MonoBehaviour
 
         SelectItem(selectedItemIndex);
     }
+    #endregion
 
+    #region [해제] 버튼 이벤트 처리 메서드
     public void OnUnEqipButton()
     {
         UnEquip(selectedItemIndex);
     }
+    #endregion
 
+    #region [버리기] 버튼 이벤트 처리 메서드
     public void OnDropButton()
     {
         ThrowItem(selectedItem);
         RemoveSelectedItem();
     }
+    #endregion
 
+    #region 선택한 아이템 제거 메서드
     void RemoveSelectedItem()
     {
         slots[selectedItemIndex].quantity--;
@@ -272,12 +291,14 @@ public class UIInventory : MonoBehaviour
 
         UpdateUI();
     }
+    #endregion
 
     public bool HasItem(ItemData item, int quantity)
     {
         return false;
     }
 
+    #region 아이템 장착 해제 메서드
     void UnEquip(int index)
     {
         slots[index].isEquipped = false;
@@ -289,4 +310,5 @@ public class UIInventory : MonoBehaviour
             SelectItem(selectedItemIndex);
         }
     }
+    #endregion
 }
