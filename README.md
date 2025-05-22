@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/3ecdb51b-b118-44df-9bea-434b0b4f8831)# Sparta Dungeon Explore README
+# Sparta Dungeon Explore README
 
 * * *
 
