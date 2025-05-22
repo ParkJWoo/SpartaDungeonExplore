@@ -13,8 +13,6 @@ public static class GameEvent
     public const string StaminaKey = "ConsumeStamina";
     public const string SpeedBuffKey = "ApplySpeedBuff";
     public const string JumpBuffKey = "ApplyJumpBuff";
-    public const string EquipKey = "EquipItem";
-    public const string UnEquipKey = "UnEquip";
 }
 #endregion
 
@@ -71,18 +69,7 @@ public class GameMediator : MonoBehaviour, IMediator
                     playerController.ApplyJumpPowerUp(jumpBuff, duration);
                 }
                 break;
-
-            case GameEvent.EquipKey:
-                if(data is ItemData itemData)
-                {
-                    playerEquipment.EquipNew(itemData);
-                }
-                break;
-
-            case GameEvent.UnEquipKey:
-                playerEquipment.UnEquip();
-                break;
-
+        
             default:
                 Debug.LogWarning($"[GameMediator] : Unknown Event {eventCode}");
                 break;
